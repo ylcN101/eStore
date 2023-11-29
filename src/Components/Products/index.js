@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import "./_products.scss"
 import { addCartItem } from "../../redux/cart/cartSlice"
+import { Link } from "react-router-dom"
 
 const Products = () => {
   const productData = useSelector((state) => state.productReducer.products)
@@ -22,15 +23,18 @@ const Products = () => {
       {productData.map((product, key) => {
         return (
           <div key={key} className="mx-5 p-3 product-card">
-            <div className="product-image-container">
-              <img
-                alt="img"
-                src={require("../../assets/images/shop/" + product.product_img)}
-              />
-            </div>
+            <Link to={"/productDetails"} state={product}>
+              <div className="product-image-container">
+                <img
+                  alt="img"
+                  src={require("../../assets/images/shop/" +
+                    product.product_img)}
+                />
+              </div>
+            </Link>
             <div className="product-info">
               <h5>
-                <span href="#">{product.product_name}</span>
+                <Link to={"/productDetails"}>{product.product_name}</Link>
               </h5>
               <p className="product-price"> ${product.price} </p>
               <div className="my-3" onClick={() => addToCart(product)}>

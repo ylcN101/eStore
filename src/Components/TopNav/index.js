@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import "./_top-nav.scss"
 import { useSelector } from "react-redux"
 
@@ -9,7 +10,9 @@ const TopNav = () => {
       <div className="header bg-dark">
         <div className="row top-nav-row">
           <div className="brand my-1">
-            <h1> eStore </h1>
+            <Link to={"/"}>
+              <h1 className="text-white"> eStore </h1>
+            </Link>
           </div>
           <div className="inp-container p-0 my-4 w-50 h-25 bg-white">
             <div className="dropdown m-0 p-0">

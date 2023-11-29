@@ -8,7 +8,7 @@ import { filterProd, filterByPrice } from "../../redux/products/productSlice"
 const SideNav = () => {
   const accordionData = useSelector((state) => state.categoryReducer.categories)
   const fetchedProdData = useSelector((state) => state.productReducer)
-  const [products, setProducts] = useState()
+  const { products } = fetchedProdData
   const [minPrice, setMinPrice] = useState(10)
   const [maxPrice, setMaxPrice] = useState(130)
   const dispatch = useDispatch()
@@ -18,23 +18,35 @@ const SideNav = () => {
   }, [dispatch])
 
   useEffect(() => {
-    setProducts(fetchedProdData.products)
-  }, [fetchedProdData])
+    setMinPrice(10)
+    setMaxPrice(130)
+  }, [products])
 
   const filterData = (selectedCat) => {
-    const payload = { selectedCat, products }
-    dispatch(filterProd(payload))
+    dispatch(
+      filterProd({
+        selectedCat,
+        originalProducts: fetchedProdData.originalProducts,
+      })
+    )
   }
+
   const applyFilterByPrice = () => {
-    const payload = { products, minPrice, maxPrice }
-    dispatch(filterByPrice(payload))
+    dispatch(
+      filterByPrice({
+        originalProducts: fetchedProdData.originalProducts,
+        minPrice,
+        maxPrice,
+      })
+    )
   }
 
   const onChangeFilterPrice = (e, filterFlag) => {
+    const value = parseInt(e.target.value, 10)
     if (filterFlag === "min") {
-      setMinPrice(e.target.value)
+      setMinPrice(value)
     } else {
-      setMaxPrice(e.target.value)
+      setMaxPrice(value)
     }
   }
 

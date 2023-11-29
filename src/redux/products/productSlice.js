@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import { getProducts } from "./actions"
 
 const initialState = {
+  originalProducts: [],
   products: [],
   loading: false,
   error: "",
@@ -12,21 +13,28 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     filterProd: (state, action) => {
-      console.log("state:", state)
-      console.log("action:", action)
-      const filterData = action.payload.products.filter(
-        (item) => item.category_id === action.payload.selectedCat.id
-      )
-      console.log("filterData:", filterData)
-      state.products = filterData
+      const { originalProducts, selectedCat } = action.payload
+      const filteredProducts = originalProducts
+        ? originalProducts.filter((item) => item.category_id === selectedCat.id)
+        : []
+
+      return {
+        ...state,
+        products: filteredProducts,
+      }
     },
     filterByPrice: (state, action) => {
-      const prodData = action.payload.products.filter(
-        (item) =>
-          item.price >= action.payload.minPrice &&
-          item.price <= action.payload.maxPrice
-      )
-      state.products = prodData
+      const { originalProducts, minPrice, maxPrice } = action.payload
+      const filteredProducts = originalProducts
+        ? originalProducts.filter(
+            (item) => item.price >= minPrice && item.price <= maxPrice
+          )
+        : []
+
+      return {
+        ...state,
+        products: filteredProducts,
+      }
     },
   },
   extraReducers: (builder) => {
@@ -34,6 +42,7 @@ const productSlice = createSlice({
       state.loading = true
     })
     builder.addCase(getProducts.fulfilled, (state, action) => {
+      state.originalProducts = action.payload
       state.products = action.payload
       state.loading = false
     })

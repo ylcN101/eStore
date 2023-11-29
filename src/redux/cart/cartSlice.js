@@ -12,14 +12,27 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addCartItem: (state, action) => {
-      const isItemExist = state.cartItems.find(
-        (item) => item.id === action.payload.id
-      )
-      state.cartItems = [...state.cartItems, action.payload]
-      state.totalQuantity = ++state.totalQuantity
-      state.totalItemsPrice = state.totalItemsPrice + action.payload.price
-      if (!isItemExist) {
-        state.totalItems = ++state.totalItems
+      const { id, price } = action.payload
+      const isItemExist = state.cartItems.find((item) => item.id === id)
+
+      const updatedCartItems = isItemExist
+        ? state.cartItems.map((item) =>
+            item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        : [...state.cartItems, { id, quantity: 1, price }]
+
+      const updatedTotalQuantity = state.totalQuantity + 1
+      const updatedTotalItems = isItemExist
+        ? state.totalItems
+        : state.totalItems + 1
+      const updatedTotalItemsPrice = state.totalItemsPrice + price
+
+      return {
+        ...state,
+        cartItems: updatedCartItems,
+        totalQuantity: updatedTotalQuantity,
+        totalItems: updatedTotalItems,
+        totalItemsPrice: updatedTotalItemsPrice,
       }
     },
   },
